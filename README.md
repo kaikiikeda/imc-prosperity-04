@@ -6,21 +6,37 @@
 
 ## Overview
 
-This is a writeup from our team's participation in **IMC Prosperity 4**, an international quantitative trading competition. We finished **[RANK] globally** out of 18,803 teams with a final score of **[SCORE] XIREC**.
+This is a writeup from our team's participation in **IMC Prosperity 4**, an international quantitative trading competition. We finished **256th globally** out of 18,803 teams with a final score of **438,210 XIREC**.
 
 | Category | Result |
 |---|---|
-| Final Score | [SCORE] XIREC |
-| Global Rank | [RANK] |
-| Algorithmic PnL | [ALGO PnL] XIREC |
-| Manual PnL | [MANUAL PnL] XIREC |
+| Final Score | 438,210 XIREC |
+| Global Rank | 256 / 18,803 |
+| Algorithmic PnL | 304,557 XIREC |
+| Manual PnL | 133,653 XIREC |
 
 ## Team Members
 
-- [Kaiki Ikeda](https://www.linkedin.com/in/kaikiikeda/)
-- [Gregory Gwee](https://www.linkedin.com/in/gregory-gwee/)
-- Ananya <!-- add LinkedIn when available -->
-- Ansh <!-- add LinkedIn when available -->
+<table>
+  <tr>
+    <td align="center">
+      <img src="Figures/kaiki_figure.png" width="100" style="border-radius:50%"/><br/>
+      <a href="https://www.linkedin.com/in/kaikiikeda/">Kaiki Ikeda</a>
+    </td>
+    <td align="center">
+      <img src="Figures/gregory_figure.png" width="100" style="border-radius:50%"/><br/>
+      <a href="https://www.linkedin.com/in/gregory-gwee/">Gregory Gwee</a>
+    </td>
+    <td align="center">
+      <img src="Figures/ananya_figure.png" width="100" style="border-radius:50%"/><br/>
+      Ananya
+    </td>
+    <td align="center">
+      <img src="Figures/ansh_figure.png" width="100" style="border-radius:50%"/><br/>
+      Ansh
+    </td>
+  </tr>
+</table>
 
 ---
 
