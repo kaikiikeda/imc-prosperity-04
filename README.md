@@ -42,33 +42,56 @@ This is a writeup from our team's participation in **IMC Prosperity 4**, an inte
 
 ## Infrastructure & Tooling
 
-We used [brief description of backtester / tooling setup]. Our workflow included:
+### [graphIMC](https://github.com/parkjpd/graphIMC)
 
-- Local backtester based on [base/source]
-- [Dashboard / visualization tools if any]
-- Jupyter notebooks for exploratory data analysis
-- Git for version control and strategy iteration
+We made a local backtester, which served as the primary research and development environment for us. This included visualization dashboards, parameter-sweeping, etc. Every strategy iteration we worked on was through this tool. This was essential to use given the 48 hour rounds where we had to make rapid iterations without waiting on IMC's official platform for insights.
+
+### [prosperity-intel](https://github.com/parkjpd/prosperity-intel)
+
+A Discord intelligence pipeline we built to stay ahead of the field. It ran a selfbot that scraped the official IMC Prosperity Discord 24/7, piped messages into a SQLite database, and used an LLM extractor to surface competitor signals into a digest. This fed directly into our research process across rounds.
 
 ---
 
 ## Round-by-Round Breakdown
 
-### Round 1 — [Products: e.g. RAINFOREST_RESIN, KELP, SQUID_INK]
+### Round 1 — ASH_COATED_OSMIUM & INTARIAN_PEPPER_ROOT
 
-**Products traded:** [list]
+**Algorithmic PnL:** 95,616 XIREC (PEPPER: 78,020 · OSMIUM: 17,596)
 
-**Strategy overview:**
+#### ASH_COATED_OSMIUM
 
-[Describe the core strategy — market making, arbitrage, trend following, etc.]
+Osmium was a textbook mean-reverting product centered around a known fair value of **10,000**. We treated it as a pure market-making problem: take any fill available below fair, sell anything above it, then passively quote on both sides just inside the best bid/ask to capture spread.
 
-**Key observations:**
+The strategy held the position limit (±80) as both a ceiling and a floor, using fallback quotes at 9,993 / 10,003 when the book was thin. No regime detection needed — Osmium never strayed far enough from 10,000 to warrant it.
 
-- [Observation 1]
-- [Observation 2]
+#### INTARIAN_PEPPER_ROOT
 
-**Results:** [PnL or rank for this round]
+Pepper Root was the more interesting problem. Despite superficial similarity to Osmium, it drifted **~1,000 points** over the course of the day (13,000 → 14,000) — a clean linear trend, not noise.
 
-<!-- ![Round 1 Chart](Figures/round1_chart.png) -->
+We built a **4-state regime-switching machine** to detect and exploit this:
+
+| Regime | Trigger | Behavior |
+|---|---|---|
+| **MM** (default) | Always active on startup | Market-make with long bias, target ~56 units long |
+| **LONG_LINEAR** | OLS: R² > 0.90, slope > 0.0003 for 3 consecutive checks | Aggressively accumulate to 76 units long, block all sells |
+| **SHORT_LINEAR** | OLS: R² > 0.90, slope < −0.0003 for 3 consecutive checks | Mirror — accumulate short, block all buys |
+| **LIQUIDATE** | Safety valve: price > 50 ticks from OLS trend line | Emergency flatten, one-way latch (no return to LINEAR) |
+
+Every **20 ticks** we ran an OLS regression on a rolling **150-tick window** of mid-prices. If R² and slope passed the threshold for 3 consecutive checks, we upgraded from MM to LINEAR. Thresholds were asymmetric by design — **easy to exit LINEAR, hard to enter it** — to avoid false signals on noisy days.
+
+In the LONG_LINEAR regime, take width was dynamic: wider early in the day (more predicted price move remaining), narrowing toward the close. Once Pepper confirmed its uptrend, we locked in at the 80-unit position limit and held it for most of the day.
+
+The `drift_broken` latch ensured that if a safety valve fired mid-trend, we wouldn't re-enter LINEAR and chase a reversal.
+
+**Final positions:** PEPPER +80 · OSMIUM +80 (both maxed long at end of day)
+
+---
+
+#### Manual Challenge — An Intarian Welcome
+
+The auction offered two products with guaranteed merchant buybacks: **DRYLAND_FLAX** (buyback: 30/unit) and **EMBER_MUSHROOM** (buyback: 20/unit, −0.10 fee). The task was to submit a single limit order (price, quantity) for each — the exchange cleared at the volume-maximizing price, with all fills at that clearing price.
+
+[Manual PnL placeholder — add result when available]
 
 ---
 
