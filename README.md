@@ -89,9 +89,17 @@ The `drift_broken` latch ensured that if a safety valve fired mid-trend, we woul
 
 #### Manual Challenge — An Intarian Welcome
 
-The auction offered two products with guaranteed merchant buybacks: **DRYLAND_FLAX** (buyback: 30/unit) and **EMBER_MUSHROOM** (buyback: 20/unit, −0.10 fee). The task was to submit a single limit order (price, quantity) for each — the exchange cleared at the volume-maximizing price, with all fills at that clearing price.
+**Manual PnL: 87,995 XIREC**
 
-[Manual PnL placeholder — add result when available]
+The auction offered two products with guaranteed merchant buybacks: **DRYLAND_FLAX** (buyback: 30/unit, no fee) and **EMBER_MUSHROOM** (buyback: 20/unit, −0.10 fee/unit). The mechanic is simple but the decision isn't: submit one limit order (price, quantity), the exchange picks a clearing price that maximizes volume, and you fill at that clearing price regardless of how high you bid. So the only question is — **where will the clearing price land?**
+
+Since you always execute at the clearing price (not your bid), bidding higher than the clearing carries no penalty. The entire game is estimating whether the clearing price will be low enough to leave you a profit after the buyback.
+
+Our approach:
+- **DRYLAND_FLAX**: bid at the full buyback price of **30** with max volume. This guaranteed we'd be filled at any clearing price ≤ 30, capturing whatever spread existed. Clearing landed at **29** → +1/unit.
+- **EMBER_MUSHROOM**: estimated the field wouldn't push clearing above **16**, leaving room above the 0.10/unit fee. Bid **17** with near-max volume. Clearing landed at **16** → profit of 20 − 16 − 0.10 = **+3.90/unit**.
+
+![Round 1 Manual Results](Figures/Round_1_Manual_Results.png)
 
 ---
 
