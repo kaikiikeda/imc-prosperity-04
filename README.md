@@ -64,6 +64,8 @@ Osmium was a textbook mean-reverting product centered around a known fair value 
 
 The strategy held the position limit (±80) as both a ceiling and a floor, using fallback quotes at 9,993 / 10,003 when the book was thin. No regime detection needed — Osmium never strayed far enough from 10,000 to warrant it.
 
+![Ash Coated Osmium](Figures/Ash%20Coated%20Osmium.png)
+
 #### INTARIAN_PEPPER_ROOT
 
 Pepper Root was the more interesting problem. Despite superficial similarity to Osmium, it drifted **~1,000 points** over the course of the day (13,000 → 14,000) — a clean linear trend, not noise.
@@ -82,6 +84,8 @@ Every **20 ticks** we ran an OLS regression on a rolling **150-tick window** of 
 In the LONG_LINEAR regime, take width was dynamic: wider early in the day (more predicted price move remaining), narrowing toward the close. Once Pepper confirmed its uptrend, we locked in at the 80-unit position limit and held it for most of the day.
 
 The `drift_broken` latch ensured that if a safety valve fired mid-trend, we wouldn't re-enter LINEAR and chase a reversal.
+
+![Intarian Pepper Root](Figures/Intarian%20Pepper%20Root.png)
 
 **Final positions:** PEPPER +80 · OSMIUM +80 (both maxed long at end of day)
 
