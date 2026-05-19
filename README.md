@@ -137,27 +137,33 @@ We chose **not to bid** for extra market access. The MAF is a blind auction — 
 
 The manual challenge this round was a budget allocation problem. We had **50,000 XIRECs** to split across three pillars — **Research**, **Scale**, and **Speed** — with a score of `Research × Scale × Speed − Budget Used`.
 
-The catch: Research grows logarithmically (diminishing returns), Scale is linear, and Speed is **rank-based** — meaning your return depends on what everyone else bids, not just your own allocation.
+The catch: Research grows logarithmically (diminishing returns), Scale is linear, and Speed is **rank-based** — meaning your return depends entirely on what everyone else bids, not just your own allocation.
 
 **Our allocation: Research 16% · Scale 50% · Speed 34%**
 
 **Manual PnL: 183,999 XIREC**
 
-The most interesting decision was Speed. Since it's rank-based, the actual percentage doesn't matter — what matters is whether you beat other teams. So we tried to model what the field would do.
+#### How we decided
 
-Our prior: most teams would either go for the obvious equal split (33/33/33) or pick round numbers like 0, 10, 20, 30. We estimated roughly:
+We built a small optimizer and ran it across six different assumptions ("presets") about how the field would behave:
 
-| Speed % | Estimated share of field |
-|---|---|
-| 0% | ~15% |
-| 10% | ~15% |
-| 20% | ~15% |
-| 30% | ~15% |
-| 33% | ~33% (the "equal thirds" crowd) |
+![Round 2 Predicted Distribution](Figures/Round_2_Manual_Predicted_Distrib.png)
 
-Bidding **34% Speed** would beat the biggest cluster (33%) outright and rank near the top — targeting the 0.9 multiplier without leaving too much capital on the table.
+The key insight was that Research has steep diminishing returns — putting 16% there captures most of the value, and anything beyond that barely moves the needle. Scale is linear, so the remaining budget naturally flows there. The real game was **Speed**.
 
-For Research and Scale, the math was simpler. Research has heavy diminishing returns — going from 0% to 16% gives most of the benefit; pushing to 50% adds relatively little. Scale is linear, so the leftover budget went there. The final split felt like a reasonable balance between a strong edge (Research), broad deployment (Scale), and winning the speed race.
+Since Speed is rank-based, we tried to model what other teams would bid. Our best guess was that most teams would either go thirds (33/33/33) or pick round numbers. Bidding 34% would beat the whole 33% cluster outright and land us near the top of the rankings — targeting the 0.9 hit rate multiplier.
+
+#### What actually happened
+
+The field was more aggressive than we expected:
+
+![Round 2 Actual Speed Distribution](Figures/Round_2_Manual_Distribution_Actual.png)
+
+There's a huge spike at 0% (teams that didn't think about Speed at all), but a dense cluster in the 30–45% range that we didn't fully anticipate. With our 34% we ranked **#1913**, which translated to a hit rate of **0.54** — well below the 0.9 we were aiming for.
+
+![Round 2 Manual Results](Figures/Round_2_Manual_Results.png)
+
+The model was right in its structure but too optimistic on where 34% would rank. In hindsight, a bid of ~40–45% would have placed us meaningfully higher without giving up much on Research or Scale.
 
 ---
 
