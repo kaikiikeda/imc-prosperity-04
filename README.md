@@ -139,7 +139,25 @@ The manual challenge this round was a budget allocation problem. We had **50,000
 
 The catch: Research grows logarithmically (diminishing returns), Scale is linear, and Speed is **rank-based** — meaning your return depends on what everyone else bids, not just your own allocation.
 
-[Manual result placeholder — add allocation percentages and PnL when available]
+**Our allocation: Research 16% · Scale 50% · Speed 34%**
+
+**Manual PnL: 183,999 XIREC**
+
+The most interesting decision was Speed. Since it's rank-based, the actual percentage doesn't matter — what matters is whether you beat other teams. So we tried to model what the field would do.
+
+Our prior: most teams would either go for the obvious equal split (33/33/33) or pick round numbers like 0, 10, 20, 30. We estimated roughly:
+
+| Speed % | Estimated share of field |
+|---|---|
+| 0% | ~15% |
+| 10% | ~15% |
+| 20% | ~15% |
+| 30% | ~15% |
+| 33% | ~33% (the "equal thirds" crowd) |
+
+Bidding **34% Speed** would beat the biggest cluster (33%) outright and rank near the top — targeting the 0.9 multiplier without leaving too much capital on the table.
+
+For Research and Scale, the math was simpler. Research has heavy diminishing returns — going from 0% to 16% gives most of the benefit; pushing to 50% adds relatively little. Scale is linear, so the leftover budget went there. The final split felt like a reasonable balance between a strong edge (Research), broad deployment (Scale), and winning the speed race.
 
 ---
 
