@@ -107,20 +107,39 @@ Our approach:
 
 ---
 
-### Round 2 — [Products: e.g. + CROISSANTS, JAMS, DJEMBES, PICNIC_BASKET1/2]
+### Round 2 — ASH_COATED_OSMIUM & INTARIAN_PEPPER_ROOT
 
-**Products traded:** [list, including carried-over products]
+**Algorithmic PnL:** 87,161 XIREC (PEPPER: 82,849 · OSMIUM: 4,312)
 
-**Strategy overview:**
+Round 2 was the same two products — but with two new wrinkles: a **Market Access Fee (MAF)** bid for extra order flow, and a refinement pass on the algorithm itself.
 
-[Describe the core strategy]
+#### Algorithmic Changes
 
-**Key observations:**
+The core strategies didn't change much, but we added one meaningful improvement: an **asymmetric order book signal**.
 
-- [Observation 1]
-- [Observation 2]
+We noticed that when one side of the order book was completely empty, prices tended to move in that direction by around 8 points over the next few ticks — consistently enough to trade on. The logic is straightforward: if there are no asks, sellers have stepped away and the price is likely rising. If there are no bids, buyers have stepped away and it's likely falling.
 
-**Results:** [PnL or rank for this round]
+When we detected this:
+- **No asks (bullish):** we shifted our sell quotes higher and cut sell size to one-third — no point selling cheap into a rally
+- **No bids (bearish):** we shifted our buy quotes lower and cut buy size to one-third — no point buying into a drop
+
+We applied this to both Osmium and Pepper Root.
+
+The other notable change was that Pepper Root now **started in LINEAR mode** immediately instead of waiting for OLS to confirm a trend first. Since Pepper trended upward in Round 1, we assumed it would continue — and it did, drifting from **14,000 → 15,000** over the day.
+
+#### Market Access Fee
+
+We chose **not to bid** for extra market access. The MAF is a blind auction — you pay your bid if you're in the top 50%, but you don't know where the median will land. Given the uncertainty and the fact that our strategy was already capturing most of the available edge, we decided it wasn't worth the risk of overpaying.
+
+---
+
+#### Manual Challenge — Invest & Expand
+
+The manual challenge this round was a budget allocation problem. We had **50,000 XIRECs** to split across three pillars — **Research**, **Scale**, and **Speed** — with a score of `Research × Scale × Speed − Budget Used`.
+
+The catch: Research grows logarithmically (diminishing returns), Scale is linear, and Speed is **rank-based** — meaning your return depends on what everyone else bids, not just your own allocation.
+
+[Manual result placeholder — add allocation percentages and PnL when available]
 
 ---
 
