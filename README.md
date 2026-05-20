@@ -350,8 +350,6 @@ We modelled 8 portfolio strategies ranging from aggressive (max exposure) to con
 | AC_40_BP (Binary put, K=40) | SELL | 50 | +15,000 |
 | AC_45_KO (Knock-out put, K=45) | BUY | 500 | -28,966 |
 
-![Round 4 Manual Results](Figures/Round_4_Manual_Results.png)
-
 **The intended trade:** a chooser option is worth at most `max(call, put)` - by definition you only get to pick one leg. But owning both the put and the call (a straddle) gives you `put + call`. Shorting the chooser while holding both legs should generate the spread between `put + call` and `max(put, call)` = `min(put, call)`. That leg worked: the chooser sale returned +39,135.
 
 **What went wrong:** the knock-out put was the main drag. With 500 contracts at K=45 and a high-vol underlying (251% annual), the knock-out barrier was breached frequently across simulations - most contracts expired worthless, losing -28,966. The KO put's payoff is path-dependent in a way the vanilla put is not; at 251% vol, even a short-dated KO barrier gets hit far more often than intuition suggests.
@@ -416,8 +414,6 @@ Each Snackpack used an exponentially-weighted moving average as the fair value e
 **Manual PnL: +76,245 XIREC (699th)**
 
 The Ashflow Alpha news source rated 9 Ignith products across direction, novelty, and transmission quality. Our framework:
-
-![Round 5 Manual Analysis](Figures/Round_5_Manual_Analysis.webp)
 
 | Product | Direction | Novelty | Net Assessment |
 |---|---|---|---|
