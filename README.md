@@ -282,20 +282,81 @@ The distribution makes the miss clear: a massive spike at 845–865 for second b
 ---
 
 <details>
-<summary><b>Round 4 — [Products]</b></summary>
+<summary><b>Round 4 — HYDROGEL_PACK, VELVETFRUIT_EXTRACT & VEV Vouchers (+ Counterparty Data)</b></summary>
 
-**Products traded:** [list]
+**Algorithmic PnL:** 177,615 XIREC (112th) · **Manual PnL:** −10,518 XIREC (971st) · **Round Total:** 167,098 XIREC (188th)
 
-**Strategy overview:**
+Same three products as Round 3, but with a major new signal: **counterparty names** are now exposed in every market trade. For the first time, `trade.buyer` and `trade.seller` contain real participant IDs — opening the door to flow analysis, counterparty profiling, and adversarial defense.
 
-[Describe the core strategy]
+![Round 4 Results](Figures/Round_4_Algo_Results.png)
 
-**Key observations:**
+#### Algorithmic Strategy — Static Z-Take (v12)
 
-- [Observation 1]
-- [Observation 2]
+| Product | Final PnL |
+|---|---|
+| HYDROGEL_PACK | +51,140 |
+| VELVETFRUIT_EXTRACT | +26,693 |
+| VEV_4000 | +19,131 |
+| VEV_4500 | +26,369 |
+| VEV_5000 | +30,963 |
+| VEV_5100 | +15,248 |
+| VEV_5200 | +12,655 |
+| VEV_5300 | −3,006 |
+| VEV_5400 | −1,079 |
+| VEV_5500 | −497 |
+| VEV_6000 / 6500 | 0 (dropped) |
 
-**Results:** [PnL or rank for this round]
+Round 4 was a complete algo rebuild. We replaced Round 3's per-product OU pivots and rolling-mean bands with a single unified framework: **static z-score mean reversion**.
+
+With 4+ days of historical data available, empirical mean/σ estimates are now more reliable than tick-by-tick rolling estimates. The simpler approach also generalises better — a rolling mean chases a drifting product, while a static mean refuses to.
+
+**Base logic (identical for all products):**
+- Fit `mean` and `sd` per product from historical data (R3 day + R4 days 1–3)
+- Each tick: `z = (mid − mean) / sd`
+- `z ≥ +1.0`: sell into bids at prices ≥ mean (up to 17 units)
+- `z ≤ −1.0`: buy from asks at prices ≤ mean (up to 17 units)
+- VEV_6000 / VEV_6500 dropped — mid pinned at 0.5, no exploitable spread
+
+**Counterparty-aware modifications:**
+
+| Mod | Status | What it does |
+|---|---|---|
+| **1.5 — Regime-shift gate** | ✅ Active | Tracks rolling 10k-tick window per product. If ≥85% of ticks sit on one side of mean, the static mean has likely drifted — pause z-takes for 5k ticks. Prevents trading against a genuine regime change. |
+| **2 — Mark-67 inventory tilt** | ❌ Disabled | Mark-67 is a systematic VEV buyer with a measured +1.97 tick forward bias at h=100. Tested as a buy-side tilt but produced regime-dependent results (−10k on the hold-out day). The static z-take already captures the same underlying OU signal. |
+| **3 — HG defensive cooldown** | ✅ Active | Mark 49 and Mark 22 aggressively compress HYDROGEL spreads just before a directional move. After 7+ ticks of single-sided compression, suppress HG z-takes for 500 ticks to avoid being adversely selected into their wave. |
+| **4 — OU extrinsic-short** | ❌ Disabled | For far-OTM strikes (5300–5500), the fitted OU stationary distribution implies fair extrinsic ≈ 0 — so shorting extrinsic should be profitable. Theory holds over the full 7-day option life but bleeds MtM losses within a single day. |
+
+The key insight on counterparty data: the new information was most valuable **defensively**. Mark-67's flow signal was real but not safely tradeable; Mark 49/22's spread compression was actionable as a cooldown trigger. Using counterparty data to avoid bad trades (Mod 3) contributed more robustly than using it to find good ones (Mod 2).
+
+---
+
+#### Manual Challenge — Vanilla Just Isn't Exotic Enough
+
+**Manual PnL: −10,518 XIREC (971st)**
+
+The challenge offered vanilla puts/calls (2-week and 3-week) plus three exotics on `AETHER_CRYSTAL` (GBM, zero drift, σ = 251% annualised, 4 steps/day). All positions held to expiry; PnL marked against the average fair value across 100 simulations.
+
+We modelled 8 portfolio strategies ranging from aggressive (max exposure) to conservative (single-leg), then chose a position close to **Q2 — High-E (mild risk control)**:
+
+![Round 4 Manual Analysis](Figures/Round_4_Manual_Analysis.webp)
+
+**Submitted positions:**
+
+| Product | Action | Volume | P&L |
+|---|---|---|---|
+| AC_50_P_2 (3-week put, K=50) | BUY | 50 | −14,120 |
+| AC_50_C_2 (3-week call, K=50) | BUY | 46 | −21,567 |
+| AC_50_CO (Chooser, K=50) | SELL | 36 | +39,135 |
+| AC_40_BP (Binary put, K=40) | SELL | 50 | +15,000 |
+| AC_45_KO (Knock-out put, K=45) | BUY | 500 | −28,966 |
+
+![Round 4 Manual Results](Figures/Round_4_Manual_Results.png)
+
+**The intended trade:** a chooser option is worth at most `max(call, put)` — by definition you only get to pick one leg. But owning both the put and the call (a straddle) gives you `put + call`. Shorting the chooser while holding both legs should generate the spread between `put + call` and `max(put, call)` = `min(put, call)`. That leg worked: the chooser sale returned +39,135.
+
+**What went wrong:** the knock-out put was the main drag. With 500 contracts at K=45 and a high-vol underlying (251% annual), the knock-out barrier was breached frequently across simulations — most contracts expired worthless, losing −28,966. The KO put's payoff is path-dependent in a way the vanilla put is not; at 251% vol, even a short-dated KO barrier gets hit far more often than intuition suggests.
+
+The binary put sale (+15,000) confirmed the underlying tended to stay above 40 in the simulation average, validating that directional call. But the combination of losing both the put and call positions (suggesting spot ended near the strike in the average) with the heavy KO loss dragged the total to −10,518.
 
 </details>
 
