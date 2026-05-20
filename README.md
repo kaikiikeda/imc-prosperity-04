@@ -363,20 +363,94 @@ The binary put sale (+15,000) confirmed the underlying tended to stay above 40 i
 ---
 
 <details>
-<summary><b>Round 5 — [Products]</b></summary>
+<summary><b>Round 5 — 50 New Products (Cherry Picking)</b></summary>
 
-**Products traded:** [list]
+**Algorithmic PnL:** −8,205 XIREC (1161st) · **Manual PnL:** +76,245 XIREC (699th) · **Round Total:** 68,040 XIREC (256th overall)
 
-**Strategy overview:**
+The final round replaced all previous products with 50 brand-new ones across 10 categories of 5, each with a position limit of **10**. The challenge was identification: not all 50 had exploitable structure, and the job was to find the ones that did, fast.
 
-[Describe the core strategy]
+![Round 5 Results](Figures/Round_5_Algo_Results.png)
 
-**Key observations:**
+#### Algorithmic Strategy — Multi-Layer Cherry Picking (v11a)
 
-- [Observation 1]
-- [Observation 2]
+| Product | Strategy | PnL |
+|---|---|---|
+| OXYGEN_SHAKE_GARLIC | Drift long | +14,693 |
+| UV_VISOR_RED | Drift long | +13,744 |
+| UV_VISOR_AMBER | Drift short | +6,235 |
+| SNACKPACK_VANILLA | EWMA take | +6,043 |
+| SNACKPACK_CHOCOLATE | EWMA take | +3,705 |
+| SNACKPACK_RASPBERRY | EWMA take | +1,088 |
+| MICROCHIP_RECTANGLE | CIRCLE lead-lag | +115 |
+| TRANSLATOR_GRAPHITE_MIST | Bollinger MR | −2,760 |
+| MICROCHIP_OVAL | Drift short | −2,649 |
+| SNACKPACK_PISTACHIO | EWMA take (OBI-gated) | −3,825 |
+| SNACKPACK_STRAWBERRY | EWMA take | −3,905 |
+| MICROCHIP_TRIANGLE | Bollinger MR | −6,017 |
+| MICROCHIP_SQUARE | Bollinger MR | −8,432 |
+| SLEEP_POD_NYLON | Bollinger MR | −12,782 |
+| PEBBLES_XL | Bollinger MR | −13,456 |
 
-**Results:** [PnL or rank for this round]
+We identified four distinct signal types across the 50 products:
+
+**1 — Drift trades** *(4 products, best performers)*
+
+Four products showed clean, persistent directional trends in historical data: `MICROCHIP_OVAL` and `UV_VISOR_AMBER` drifted down; `UV_VISOR_RED` and `OXYGEN_SHAKE_GARLIC` drifted up. We ran each with a trailing-stop + auto-resume system: maintain the max-position directional bet as long as price stays within `stop` ticks of the best achieved level; flatten and re-enter if the stop triggers then reverses. This was the only consistently profitable strategy on live day (+34,672 combined from RED, GARLIC, AMBER).
+
+**2 — Bollinger Band MR** *(5 products)*
+
+`PEBBLES_XL`, `SLEEP_POD_NYLON`, `MICROCHIP_TRIANGLE`, `TRANSLATOR_GRAPHITE_MIST`, and `MICROCHIP_SQUARE` all showed mean-reverting behaviour in backtests. Each used a rolling window (200–1,500 ticks), entering at |z| ≥ 2.0–2.5 σ and exiting when z crosses zero. Hyperparameters were tuned by 3-day cross-validation with a **minimax criterion** — pick parameters where the worst of the three days is highest, requiring all days to be positive. Despite this, all five Bollinger products lost on live day (−43,447 combined), the primary driver of the negative algo result. The live day exposed regime drift that the 3-day backtest hadn't captured.
+
+**3 — EWMA Take** *(5 Snackpacks)*
+
+Each Snackpack used an exponentially-weighted moving average as the fair value estimate (`fair = (1−α)·fair + α·mid`), taking against the book when the best ask/bid deviated from fair by more than `edge`. Per-product α and edge were tuned independently. Pistachio additionally used an order-book imbalance gate to filter wrong-direction trades. Results were mixed: Vanilla and Chocolate were profitable, Pistachio and Strawberry were not (−1,637 net across all five).
+
+**4 — CIRCLE → RECTANGLE lead-lag**
+
+`MICROCHIP_CIRCLE` was observed to lead `MICROCHIP_RECTANGLE` by ~200 ticks. When CIRCLE moved ≥100 ticks over a 200-tick window, we took a directional position in RECTANGLE (up to 5 units). Nearly flat on the day (+115) — the signal was real but small.
+
+---
+
+#### Manual Challenge — Ashflow Alpha (Ignith Exchange)
+
+**Manual PnL: +76,245 XIREC (699th)**
+
+The Ashflow Alpha news source rated 9 Ignith products across direction, novelty, and transmission quality. Our framework:
+
+![Round 5 Manual Analysis](Figures/Round_5_Manual_Analysis.webp)
+
+| Product | Direction | Novelty | Net Assessment |
+|---|---|---|---|
+| Lava Cake | − | High (lab tests confirmed) | **Strong −** |
+| Magma Ink | + | High (sold-out launch) | **Strong +** |
+| Scoria Paste | + | High (influencer call) | **Strong +** |
+| Ashes of Phoenix | − | High (resurfaced video) | **Mod −** |
+| Thermalite Core | + | Low (trend telegraphed) | **Mild +** |
+| Volcanic Incense | + | Low (rally in progress) | **Mild +** |
+| Pyroflex Cells | − | Low (cancellation known) | **Mild −** |
+| Sulfur Reactor | + | High (index inclusion) | **~0 / Mild −** |
+| Obsidian Cutlery | − | High (yesterday) | **Mild −** |
+
+The key filter was **novelty vs. transmission**: high-novelty news moves prices only if it flows directly into product demand. Sulfur Reactor's index-inclusion news was high novelty but the equity flow wouldn't reach the physical product market (indirect transmission → ~0). Obsidian Cutlery's safety news was ambiguous — could read as a supply shock (bullish) or a demand shock (bearish).
+
+**Positions submitted:**
+
+| Product | Action | % | P&L |
+|---|---|---|---|
+| Lava Cake | SELL | 34% | +59,802 |
+| Thermalite Core | BUY | 12% | +12,102 |
+| Obsidian Cutlery | BUY | 22% | −26,585 |
+| Pyroflex Cells | BUY | 4% | −8,414 |
+| Ashes of Phoenix | SELL | 1% | +250 |
+| Volcanic Incense / Sulfur / Magma / Scoria | — | 0% | 0 |
+
+![Round 5 Manual Results](Figures/Round_5_Manual_Results.png)
+
+The biggest win was the **Lava Cake short** (+59,802): clear high-novelty negative news with direct consumer demand transmission — exactly the kind of strong, unambiguous signal worth concentrating in despite the quadratic fee (34% allocation → 115,600 fee).
+
+The drag came from **Obsidian Cutlery** (−26,585). We read the ambiguous safety/supply news as potentially bullish for supply scarcity and took a long position, but the bearish consumer demand interpretation won out. The quadratic fee structure made this the most costly mistake — 22% allocation meant the fee alone was 48,400.
+
+Magma Ink and Scoria Paste were rated Strong + but we passed on them (0% allocation). The crowd-influenced return mechanic made the "Strong +" products risky if everyone else also piled in — we judged the fee cost of large positions in consensus trades wasn't worth it. In hindsight that was overly conservative.
 
 </details>
 
