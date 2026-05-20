@@ -44,9 +44,11 @@ A Discord intelligence pipeline we built to stay ahead of the field. It ran a se
 
 ## Round-by-Round Breakdown
 
-### Round 1 — ASH_COATED_OSMIUM & INTARIAN_PEPPER_ROOT
+<details>
+<summary><b>Round 1 — ASH_COATED_OSMIUM & INTARIAN_PEPPER_ROOT</b></summary>
 
-**Algorithmic PnL:** 95,616 XIREC (PEPPER: 78,020 · OSMIUM: 17,596)
+**Algorithmic PnL: 95,616 XIREC (PEPPER: 78,020 · OSMIUM: 17,596)** <br>
+**Algorithmic Rank: 1600th**
 
 #### ASH_COATED_OSMIUM
 
@@ -83,7 +85,8 @@ The `drift_broken` latch ensured that if a safety valve fired mid-trend, we woul
 
 #### Manual Challenge — An Intarian Welcome
 
-**Manual PnL: 87,995 XIREC**
+**Manual PnL: 87,995 XIREC** <br>
+**Manual Rank: 1st**
 
 The auction offered two products with guaranteed merchant buybacks: **DRYLAND_FLAX** (buyback: 30/unit, no fee) and **EMBER_MUSHROOM** (buyback: 20/unit, −0.10 fee/unit). The mechanic is simple but the decision isn't: submit one limit order (price, quantity), the exchange picks a clearing price that maximizes volume, and you fill at that clearing price regardless of how high you bid. So the only question is — **where will the clearing price land?**
 
@@ -95,11 +98,15 @@ Our approach:
 
 ![Round 1 Manual Results](Figures/Round_1_Manual_Results.png)
 
+</details>
+
 ---
 
-### Round 2 — ASH_COATED_OSMIUM & INTARIAN_PEPPER_ROOT
+<details>
+<summary><b>Round 2 — ASH_COATED_OSMIUM & INTARIAN_PEPPER_ROOT</b></summary>
 
-**Algorithmic PnL:** 87,161 XIREC (PEPPER: 82,849 · OSMIUM: 4,312)
+**Algorithmic PnL: 87,161 XIREC (PEPPER: 82,849 · OSMIUM: 4,312)** <br>
+**Algorithmic Rank: 1754th**
 
 Round 2 was the same two products — but with two new wrinkles: a **Market Access Fee (MAF)** bid for extra order flow, and a refinement pass on the algorithm itself.
 
@@ -131,7 +138,8 @@ The catch: Research grows logarithmically (diminishing returns), Scale is linear
 
 **Our allocation: Research 16% · Scale 50% · Speed 34%**
 
-**Manual PnL: 183,999 XIREC**
+**Manual PnL: 183,999 XIREC** <br>
+**Manual Rank: 139th**
 
 #### How we decided
 
@@ -155,9 +163,12 @@ There's a huge spike at 0% (teams that didn't think about Speed at all), but a d
 
 The model was right in its structure but too optimistic on where 34% would rank. In hindsight, a bid of ~40–45% would have placed us meaningfully higher without giving up much on Research or Scale.
 
+</details>
+
 ---
 
-### Round 3 — [Products: e.g. + VOLCANIC_ROCK, VOUCHERS]
+<details>
+<summary><b>Round 3 — [Products: e.g. + VOLCANIC_ROCK, VOUCHERS]</b></summary>
 
 **Products traded:** [list]
 
@@ -172,9 +183,12 @@ The model was right in its structure but too optimistic on where 34% would rank.
 
 **Results:** [PnL or rank for this round]
 
+</details>
+
 ---
 
-### Round 4 — [Products]
+<details>
+<summary><b>Round 4 — [Products]</b></summary>
 
 **Products traded:** [list]
 
@@ -189,9 +203,12 @@ The model was right in its structure but too optimistic on where 34% would rank.
 
 **Results:** [PnL or rank for this round]
 
+</details>
+
 ---
 
-### Round 5 — [Products]
+<details>
+<summary><b>Round 5 — [Products]</b></summary>
 
 **Products traded:** [list]
 
@@ -205,30 +222,47 @@ The model was right in its structure but too optimistic on where 34% would rank.
 - [Observation 2]
 
 **Results:** [PnL or rank for this round]
+
+</details>
 
 ---
 
 ## Manual Challenges
 
-### Round 1 — [Challenge Name]
+<details>
+<summary><b>Round 1 — [Challenge Name]</b></summary>
 
 [Describe approach and result]
 
-### Round 2 — [Challenge Name]
+</details>
+
+<details>
+<summary><b>Round 2 — [Challenge Name]</b></summary>
 
 [Describe approach and result]
 
-### Round 3 — [Challenge Name]
+</details>
+
+<details>
+<summary><b>Round 3 — [Challenge Name]</b></summary>
 
 [Describe approach and result]
 
-### Round 4 — [Challenge Name]
+</details>
+
+<details>
+<summary><b>Round 4 — [Challenge Name]</b></summary>
 
 [Describe approach and result]
 
-### Round 5 — [Challenge Name]
+</details>
+
+<details>
+<summary><b>Round 5 — [Challenge Name]</b></summary>
 
 [Describe approach and result]
+
+</details>
 
 ---
 
