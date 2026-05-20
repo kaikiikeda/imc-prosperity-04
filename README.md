@@ -246,8 +246,6 @@ Because the optimal bid 2 depends entirely on what everyone else bids, we built 
 
 ![Round 3 Predicted Distributions](Figures/Round_3_Manual_Pred_Analysis.png)
 
-![Round 3 Optimal Bids by Scenario](Figures/Round_3_Manual_Pred_Table.png)
-
 | # | Scenario | b1\* | b2\* | EV\* |
 |---|---|---|---|---|
 | 0 | Naive Nash (PointMass 837) | 750 | 835 | 85.00 |
