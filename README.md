@@ -24,21 +24,11 @@ This is a writeup from our team's participation in **IMC Prosperity 4**, an inte
       <a href="https://www.linkedin.com/in/kaikiikeda/">Kaiki Ikeda</a>
     </td>
     <td align="center">
-      <img src="Figures/gregory_figure.png" width="100" style="border-radius:50%"/><br/>
+      <img src="Figures/greg_figure.jpg" width="100" style="border-radius:50%"/><br/>
       <a href="https://www.linkedin.com/in/gregory-gwee/">Gregory Gwee</a>
-    </td>
-    <td align="center">
-      <img src="Figures/ananya_figure.png" width="100" style="border-radius:50%"/><br/>
-      Ananya
-    </td>
-    <td align="center">
-      <img src="Figures/ansh_figure.png" width="100" style="border-radius:50%"/><br/>
-      Ansh
     </td>
   </tr>
 </table>
-
----
 
 ## Infrastructure & Tooling
 
