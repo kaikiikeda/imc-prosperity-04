@@ -168,20 +168,116 @@ The model was right in its structure but too optimistic on where 34% would rank.
 ---
 
 <details>
-<summary><b>Round 3 — [Products: e.g. + VOLCANIC_ROCK, VOUCHERS]</b></summary>
+<summary><b>Round 3 — HYDROGEL_PACK, VELVETFRUIT_EXTRACT & VEV Vouchers</b></summary>
 
-**Products traded:** [list]
+**Algorithmic PnL:** 135,147 XIREC (187th) · **Manual PnL:** 67,926 XIREC (535th) · **Round Total:** 203,073 XIREC (204th)
 
-**Strategy overview:**
+Round 3 marked the start of GOAT — the leaderboard reset to zero, and three entirely new products were introduced: two delta-1 products (`HYDROGEL_PACK`, `VELVETFRUIT_EXTRACT`) and a chain of 10 European call options on VEV with strikes ranging from 4,000 to 6,500. All had TTE of 5 days at round start.
 
-[Options pricing, volatility modeling, etc.]
+![Round 3 Results](Figures/Round_3_Algo_Results.png)
 
-**Key observations:**
+#### Algorithmic Strategy
 
-- [Observation 1]
-- [Observation 2]
+| Product | Final PnL |
+|---|---|
+| HYDROGEL_PACK | +23,003 |
+| VELVETFRUIT_EXTRACT | +43,440 |
+| VEV_4000 | −837 |
+| VEV_4500 | −521 |
+| VEV_5000 | +21,508 |
+| VEV_5100 | +25,460 |
+| VEV_5200 | +17,153 |
+| VEV_5300 | +5,940 |
+| VEV_5400 / 5500 / 6000 / 6500 | ~0 |
 
-**Results:** [PnL or rank for this round]
+##### HYDROGEL_PACK (+23,003 XIREC)
+
+Hydrogel behaved as a mean-reverting product around a pivot of **9,968**. We modeled fair value as an Ornstein-Uhlenbeck process layered with two real-time signals:
+
+- **Book imbalance:** when buy-side volume dominates the top-of-book, we shift fair value downward slightly (IMB_BIAS = −15) to account for adverse selection — an imbalanced book tends to run against passive sellers
+- **Impulse pushback:** if the mid price moved sharply in one tick, we applied a small mean-reversion adjustment in the opposite direction (pushback = 30% of the move), effectively fading short-term momentum
+
+Passive quotes were tiered across three price levels (offsets +1/+2/+3 from mid, sizes 50/40/30) to improve fill rates without concentrating risk on a single level.
+
+##### VELVETFRUIT_EXTRACT (+43,440 XIREC)
+
+VEV Extract was also mean-reverting, but with a key wrinkle: we set our fair value anchor **asymmetrically below** the actual sample mean (~5,246–5,255) at **5,240**. This created a deliberate short bias — by treating the product as "expensive" relative to our anchor, we were more aggressive selling high than buying low.
+
+The anchor proved correct: the product drifted from ~5,296 at open to ~5,232 by close, and the short-leaning strategy captured most of that move.
+
+We also added a **bootstrap warmup** for the first 50 ticks: the band threshold was multiplied by 5× during this period to prevent the strategy from trading on an unformed price history and incurring early losses.
+
+##### VEV Vouchers (+68,703 XIREC net)
+
+We built both a **Black-Scholes branch** (complete closed-form European call pricing with per-strike implied volatility estimates) and a **rolling-mean band branch**. We submitted the rolling-mean version.
+
+For each of the 8 active strikes (VEV_4000 through VEV_5500), we maintained a rolling window of mid prices and market-made around the rolling mean with a fixed band of ±10. The key observations:
+
+- **Deep ITM (VEV_4000, VEV_4500) lost money** — prices track intrinsic value almost exactly, leaving almost no spread to exploit. The rolling mean can't capture meaningful edge when the option price is just `max(spot − strike, 0)`.
+- **ATM and near-OTM (VEV_5000–5300) were highly profitable** — these had wide enough spreads and sufficient mean-reversion dynamics to generate consistent edge. VEV_5100 alone contributed +25,460.
+- **Deep OTM (VEV_5400–6500) were flat** — prices effectively at zero or one, so there was nothing to trade.
+
+The Black-Scholes branch was kept in the code but disabled. The MR approach was simpler and worked in practice; BS would have required accurate volatility estimates and delta-hedging infrastructure we hadn't built.
+
+A **Type D circuit breaker** forced close-only mode at tick 9,815 (timestamp ~981,500) to lock in unrealized PnL before end-of-day auto-liquidation — avoiding the risk of the matching engine closing positions at unfavorable prices.
+
+---
+
+#### Manual Challenge — The Celestial Gardeners' Guild
+
+**Manual PnL: 67,926 XIREC (535th)**
+
+The setup: trade against a secret pool of counterparties whose reserve prices are uniformly distributed on {670, 675, 680, …, 920} (51 values, ~1,000 total counterparties). You submit two bids. Bid 1 fills at your bid if it beats a counterparty's reserve. Bid 2 fills at your bid if it beats the reserve **and** your bid exceeds the field average of all second bids — otherwise, profit is penalized by `((920 − avg_b2) / (920 − b2))³`, a cubic penalty that becomes severe as you fall below the field average.
+
+**Our bids:** 755 (Bid 1) · 845 (Bid 2)
+
+| | Bid 1 (755) | Bid 2 (845) |
+|---|---|---|
+| Accepted | 320 | 376 |
+| Rejected | 680 | 624 |
+| Margin/unit | 165 | ~40.3 (penalized) |
+| P&L | 52,800 | 15,126 |
+
+![Round 3 Manual Results](Figures/Round_3_Manual_Results.png)
+
+#### How we decided
+
+Because the optimal bid 2 depends entirely on what everyone else bids, we built a simulator to find the EV-maximizing bids under different assumptions about field behaviour. We modelled 8 scenarios:
+
+![Round 3 Predicted Distributions](Figures/Round_3_Manual_Pred_Analysis.png)
+
+![Round 3 Optimal Bids by Scenario](Figures/Round_3_Manual_Pred_Table.png)
+
+| # | Scenario | b1\* | b2\* | EV\* |
+|---|---|---|---|---|
+| 0 | Naive Nash (PointMass 837) | 750 | 835 | 85.00 |
+| 1 | Tight rational ~837 | 750 | 840 | 84.90 |
+| 2 | Slight over-bidders ~842 | 755 | 845 | 84.71 |
+| 3 | 55% rational + 45% over-bidders | 755 | 840 | 84.90 |
+| 4 | 85% rational + 15% griefers | 750 | 835 | 85.00 |
+| 5 | P3-team analog mixture | 750 | 835 | 84.92 |
+| 6 | Pessimistic over-coord ~870 | 770 | 870 | 81.27 |
+| 7 | P3 shifted +552 (empirical) | 750 | 840 | 84.90 |
+
+The Nash equilibrium for this game (where every team maximises EV assuming everyone else does too) converges to a second bid around **835–840**. Scenarios 0–5 and 7 all landed in that range, with EV tightly clustered around 84.9–85.0. Only the pessimistic over-coordination scenario (scenario 6) pushed the optimum to 870, at a meaningful EV cost (81.3 vs ~85).
+
+We chose **b1=755, b2=845** — matching the "Slight over-bidders ~842" scenario — reasoning that teams would bid slightly above the pure Nash equilibrium as a hedge against being caught below the average.
+
+#### What actually happened
+
+The field averaged 859 on second bids — well above any of our rational-behaviour scenarios, and closer to the pessimistic over-coordination case. Our 845 sat below that average, triggering the cubic penalty:
+
+```
+((920 − 859) / (920 − 845))³ = (61 / 75)³ ≈ 0.537
+```
+
+That cut our effective margin from 75 to ~40/unit. Had we bid 860 (just above the actual avg), unpenalized margin of 60/unit would have outperformed our actual ~40.3/unit.
+
+Bid 1 also came in as the lowest in the entire field (field avg: 768). At 755 we captured reserves 670–750 (~320 counterparties). Matching the field average of 768 would have added roughly 18% more volume at only slightly lower margin.
+
+![Round 3 Bid Distribution](Figures/Round_3_Manual_Distribution.png)
+
+The distribution makes the miss clear: a massive spike at 845–865 for second bids, with our 845 at the bottom of that cluster. Scenario 6 turned out to be closest to reality — but it had also looked like the most pessimistic outlier when we were modelling. In hindsight, the field collectively over-coordinated on high second bids even at the cost of EV, and a bid of ~865 would have sat safely above the average while still maintaining a 55/unit margin.
 
 </details>
 
