@@ -461,13 +461,6 @@ Magma Ink and Scoria Paste were rated Strong + but we passed on them (0% allocat
 │   ├── Round3/      # Trading algorithms for Round 3
 │   ├── Round4/      # Trading algorithms for Round 4
 │   └── Round5/      # Trading algorithms for Round 5
-├── Analysis/
-│   ├── Round1/      # Notebooks and analysis for Round 1
-│   ├── Round2/
-│   ├── Round3/
-│   ├── Round4/
-│   └── Round5/
 ├── Figures/         # Charts, dashboards, visualizations
-├── Scores/          # Score screenshots and progression data
 └── README.md
 ```
