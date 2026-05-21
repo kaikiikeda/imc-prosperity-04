@@ -30,16 +30,6 @@ This is a writeup from our team's participation in **IMC Prosperity 4**, an inte
   </tr>
 </table>
 
-## Infrastructure & Tooling
-
-### [graphIMC](https://github.com/parkjpd/graphIMC)
-
-We made a local backtester, which served as the primary research and development environment for us. This included visualization dashboards, parameter-sweeping, etc. Every strategy iteration we worked on was through this tool. This was essential to use given the 48 hour rounds where we had to make rapid iterations without waiting on IMC's official platform for insights.
-
-### [prosperity-intel](https://github.com/parkjpd/prosperity-intel)
-
-A Discord intelligence pipeline we built to stay ahead of the field. It ran a selfbot that scraped the official IMC Prosperity Discord 24/7, piped messages into a SQLite database, and used an LLM extractor to surface competitor signals into a digest. This fed directly into our research process across rounds.
-
 ---
 
 ## Round-by-Round Breakdown
