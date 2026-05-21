@@ -6,12 +6,13 @@
 
 ## Overview
 
-This is a writeup from our team's participation in **IMC Prosperity 4**, an international quantitative trading competition. We finished **256th globally** out of 18,803 teams with a final score of **438,210 XIREC**.
+This is a writeup from our team's participation in **IMC Prosperity 4**, an international quantitative trading competition. We finished **256th globally (68th in the US)** out of 18,803 teams with a final score of **438,210 XIREC**.
 
 | Category | Result |
 |---|---|
 | Final Score | 438,210 XIREC |
 | Global Rank | 256 / 18,803 |
+| US Rank | 68 / 896 |
 | Algorithmic PnL | 304,557 XIREC |
 | Manual PnL | 133,653 XIREC |
 
