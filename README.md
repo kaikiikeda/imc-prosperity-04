@@ -1,6 +1,3 @@
-<p align="center">
-  <img src="Figures/blue_lion.png" alt="Blue Lion Trading" width="120"/>
-</p>
 
 # Blue Lion Trading - IMC Prosperity 4 Writeup
 
