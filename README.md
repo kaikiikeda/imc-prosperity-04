@@ -13,7 +13,7 @@ This is a writeup from our team's participation in **IMC Prosperity 4**, an inte
 | Algorithmic PnL | 304,557 XIREC |
 | Manual PnL | 133,653 XIREC |
 
-## Team Members (Ananya and Ansh were also a part of our team but had to leave mid-competition)
+## Team Members (Ananya and Ansh were also a part of our team)
 
 <table>
   <tr>
